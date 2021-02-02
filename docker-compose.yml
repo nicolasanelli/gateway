@@ -1,0 +1,62 @@
+version: "3"
+
+services:
+
+  gateway:
+    image: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./gateway/default.conf:/etc/nginx/conf.d/default.conf:ro
+    links:
+      - frontend
+      - backend
+
+  frontend:
+    image: node:14.15.0
+    stdin_open: true
+    working_dir: /usr/app
+    ports:
+      - "3001:8080"
+    restart: unless-stopped
+    volumes:
+     - ./frontend/:/usr/app
+    command: ['npm', 'run', 'dev']
+
+  backend:
+    image: node:14.15.0
+    working_dir: /usr/app
+    ports:
+      - "3002:3333"
+    restart: unless-stopped
+    volumes:
+     - ./backend/:/usr/app
+    command: ['npm', 'run', 'dev']
+
+#  mysql:
+#    image: mysql:5.7
+#    ports:
+#      - "33061:3306"
+#    restart: unless-stopped
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=root
+#      - MYSQL_DATABASE=dev_biersociety
+#      - MYSQL_USER=dbuser
+#      - MYSQL_PASSWORD=dbpassword
+#    volumes:
+#      - /var/lib/mysql
+#      - ../database/dmp.sql:/docker-entrypoint-initdb.d/dump.sql
+
+#  mailhog:
+#    image: mailhog/mailhog
+#    ports:
+#      - "8011:1025"
+#      - "8012:8025"
+
+#  minio:
+#    image: minio/minio
+#    ports:
+#      - "8010:9000"
+#    environment:
+#      -MINIO_ACCESS_KEY_FILE=minio_access_key
+#      -MINIO_SECRET_KEY_FILE=minio_secret_key
