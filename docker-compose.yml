@@ -1,7 +1,4 @@
-version: "3"
-
 services:
-
   gateway:
     image: nginx
     ports:
@@ -13,24 +10,17 @@ services:
       - backend
 
   frontend:
-    image: node:14.15.0
-    stdin_open: true
-    working_dir: /usr/app
+    build: ./frontend
     ports:
       - "3001:8080"
     restart: unless-stopped
-    volumes:
-     - ./frontend/:/usr/app
     command: ['npm', 'run', 'dev']
 
   backend:
-    image: node:14.15.0
-    working_dir: /usr/app
+    build: ./backend
     ports:
       - "3002:3333"
     restart: unless-stopped
-    volumes:
-     - ./backend/:/usr/app
     command: ['npm', 'run', 'dev']
 
 #  mysql:
